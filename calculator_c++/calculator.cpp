@@ -1,130 +1,117 @@
-#include<iostream>
-#include<stdio.h>
-#include<conio.h>
-#include<math.h>
-#include<stdlib.h>
-using namespace std;
-void add();
-void sub();
-void multi();
-void division();
-void sqr();
-void srt();
-void exit();
-int main()
-{
-system("cls");
-int opr;
-// display different operation of the calculator
-do
-{
-cout << "Select any operation from the C++ Calculator"
-     "\n1 = Addition"
-     "\n2 = Subtraction"
-     "\n3 = Multiplication"
-     "\n4 = Division"
-     "\n5 = Square"
-     "\n6 = Square Root"
-     "\n7 = Exit"
-     "\n \n Make a choice: ";
-     cin >> opr;
+#include <iostream>
+#include <cmath>
+#include <limits>
+#include <vector>
 
-   switch (opr)
-     {
-     case 1:
-    add();   // call add() function to find the Addition
-    break;
-    case 2:
-    sub();   // call sub() function to find the subtraction
-    break;
-    case 3:
-    multi(); // call multi() function to find the multiplication
-    break;
-    case 4:
-    division(); // call division() function to find the division
-    break;
-    case 5:
-    sqr(); // call sqr() function to find the square of a number
-    break;
-    case 6:
-    srt(); // call srt() function to find the Square Root of the given number
-    break;
-    case 7:
-    exit(0);   // terminate the program
-    break;
-    default:
-    cout <<"Something is wrong..!!";
-    break;
-    }
-    cout <<" \n------------------------------\n";
-    }while(opr != 7);
-    getch();
+class Calculator {
+public:
+    void run() {
+        int choice;
+        do {
+            displayMenu();
+            choice = getChoice();
+            processChoice(choice);
+        } while (choice != 7);
     }
 
-void add()
-{
-int n, sum = 0, i, number;
-cout <<"How many numbers you want to add: ";
-cin >> n;
-cout << "Please enter the number one by one: \n";
-for (i = 1; i <= n; i++)
-{
-cin >> number;
-sum = sum + number;
-}
-cout << "\n Sum of the numbers = "<< sum;
-}
-void sub()
-{
-int num1, num2, z;
-cout <<" \n Enter the First number = ";
-cin >> num1;
-cout << "\n Enter the Second number = ";
-cin >> num2;
-z = num1 - num2;
-cout <<"\n Subtraction of the number = " << z;
-}
-void multi()
-{
-int num1, num2, mul;
-cout <<" \n Enter the First number = ";
-cin >> num1;
-cout << "\n Enter the Second number = ";
-cin >> num2;
-mul = num1 * num2;
-cout <<"\n Multiplication of two numbers = " << mul;
-}
-void division()
-{
-int num1, num2, div = 0;
-cout <<" \n Enter the First number = ";
-cin >> num1;
-cout << "\n Enter the Second number = ";
-cin >> num2;
-while ( num2 == 0)
-     {
-     cout << "\n Divisor canot be zero"
-         "\n Please enter the divisor once again: ";
-         cin >> num2;
-         }
-div = num1 / num2;
-cout <<"\n Division of two numbers = " << div;
-}
-void sqr()
-{
-int num1;
-float sq;
-cout <<" \n Enter a number to find the Square: ";
-cin >> num1;
-sq = num1 * num1;
-cout <<" \n Square of " << num1<< " is : "<< sq;
-}
-void srt()
-{
-float q;
-int num1;
-cout << "\n Enter the number to find the Square Root:";
-cin >> num1;
-q = sqrt(num1);
-cout <<" \n Square Root of " << num1<< " is : "<< q;
+private:
+    void displayMenu() const {
+        std::cout << "\nC++ Calculator Menu:\n"
+                  << "1. Addition\n"
+                  << "2. Subtraction\n"
+                  << "3. Multiplication\n"
+                  << "4. Division\n"
+                  << "5. Square\n"
+                  << "6. Square Root\n"
+                  << "7. Exit\n"
+                  << "Enter your choice: ";
+    }
+
+    int getChoice() const {
+        int choice;
+        while (!(std::cin >> choice) || choice < 1 || choice > 7) {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "Invalid input. Please enter a number between 1 and 7: ";
+        }
+        return choice;
+    }
+
+    void processChoice(int choice) {
+        switch (choice) {
+            case 1: add(); break;
+            case 2: subtract(); break;
+            case 3: multiply(); break;
+            case 4: divide(); break;
+            case 5: square(); break;
+            case 6: squareRoot(); break;
+            case 7: std::cout << "Exiting calculator. Goodbye!\n"; break;
+        }
+    }
+
+    double getNumber(const std::string& prompt) const {
+        double num;
+        std::cout << prompt;
+        while (!(std::cin >> num)) {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "Invalid input. Please enter a number: ";
+        }
+        return num;
+    }
+
+    void add() {
+        int count = getNumber("How many numbers do you want to add? ");
+        std::vector<double> numbers(count);
+        for (int i = 0; i < count; ++i) {
+            numbers[i] = getNumber("Enter number " + std::to_string(i + 1) + ": ");
+        }
+        double sum = 0;
+        for (double num : numbers) {
+            sum += num;
+        }
+        std::cout << "Sum: " << sum << '\n';
+    }
+
+    void subtract() {
+        double num1 = getNumber("Enter the first number: ");
+        double num2 = getNumber("Enter the second number: ");
+        std::cout << "Difference: " << (num1 - num2) << '\n';
+    }
+
+    void multiply() {
+        double num1 = getNumber("Enter the first number: ");
+        double num2 = getNumber("Enter the second number: ");
+        std::cout << "Product: " << (num1 * num2) << '\n';
+    }
+
+    void divide() {
+        double num1 = getNumber("Enter the dividend: ");
+        double num2 = getNumber("Enter the divisor: ");
+        while (num2 == 0) {
+            std::cout << "Error: Division by zero.\n";
+            num2 = getNumber("Enter a non-zero divisor: ");
+        }
+        std::cout << "Quotient: " << (num1 / num2) << '\n';
+    }
+
+    void square() {
+        double num = getNumber("Enter a number to square: ");
+        std::cout << "Square: " << (num * num) << '\n';
+    }
+
+    void squareRoot() {
+        double num = getNumber("Enter a number to find its square root: ");
+        while (num < 0) {
+            std::cout << "Error: Cannot calculate square root of a negative number.\n";
+            num = getNumber("Enter a non-negative number: ");
+        }
+        std::cout << "Square root: " << std::sqrt(num) << '\n';
+    }
+};
+
+int main() {
+    Calculator calc;
+    calc.run();
+    return 0;
 }
